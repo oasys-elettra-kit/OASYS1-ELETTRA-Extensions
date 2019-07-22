@@ -5,4 +5,4 @@ This is just a first test to try out the coding features.
 
 The repository can be found at: 
 
-https://github.com/maltissimo/OASYS1-ELETTRA-Extension
+https://github.com/oasys-elettra-kit/OASYS1-ELETTRA-Extension
