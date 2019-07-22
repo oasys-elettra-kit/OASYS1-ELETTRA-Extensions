@@ -90,7 +90,7 @@ class FluxCalculator(AutomaticElement):
     input_spectrum = None
     flux_index = -1
 
-    usage_path = os.path.join(resources.package_dirname("orangecontrib.aps.shadow.widgets.extension"), "misc", "flux_calculator.png")
+    usage_path = os.path.join(resources.package_dirname("orangecontrib.elettra.shadow.widgets.extension"), "misc", "flux_calculator.png")
 
     def __init__(self):
         super(FluxCalculator, self).__init__()
