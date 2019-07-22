@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 
@@ -85,7 +85,7 @@ class FluxCalculator(AutomaticElement):
 
     input_beam     = None
     input_spectrum = None
-    flux_index = -1
+    spectral_power_index= -1
 
     usage_path = os.path.join(resources.package_dirname("orangecontrib.elettra.shadow.widgets.extension"), "misc", "flux_calculator.png")
 
