@@ -49,7 +49,7 @@ import sys, numpy, os
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QLabel, QSizePolicy
+from PyQt5.QtWidgets import QMessageBox, QLabel, QSizePolicy, QApplication
 from PyQt5.QtGui import QPixmap
 
 import orangecanvas.resources as resources
@@ -253,7 +253,7 @@ def calculate_flux_at_sample(spectrum, flux_index, flux_factor, energy):
 
 
 if __name__ == "__main__":
-    a = QtGui.QApplication(sys.argv)
+    a = QApplication(sys.argv)
     ow = FluxCalculator()
     ow.show()
     a.exec_()
