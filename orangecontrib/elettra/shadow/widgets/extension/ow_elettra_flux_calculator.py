@@ -1,55 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# #########################################################################
-# Copyright (c) 2018, UChicago Argonne, LLC. All rights reserved.         #
-#                                                                         #
-# Copyright 2018. UChicago Argonne, LLC. This software was produced       #
-# under U.S. Government contract DE-AC02-06CH11357 for Argonne National   #
-# Laboratory (ANL), which is operated by UChicago Argonne, LLC for the    #
-# U.S. Department of Energy. The U.S. Government has rights to use,       #
-# reproduce, and distribute this software.  NEITHER THE GOVERNMENT NOR    #
-# UChicago Argonne, LLC MAKES ANY WARRANTY, EXPRESS OR IMPLIED, OR        #
-# ASSUMES ANY LIABILITY FOR THE USE OF THIS SOFTWARE.  If software is     #
-# modified to produce derivative works, such modified software should     #
-# be clearly marked, so as not to confuse it with the version available   #
-# from ANL.                                                               #
-#                                                                         #
-# Additionally, redistribution and use in source and binary forms, with   #
-# or without modification, are permitted provided that the following      #
-# conditions are met:                                                     #
-#                                                                         #
-#     * Redistributions of source code must retain the above copyright    #
-#       notice, this list of conditions and the following disclaimer.     #
-#                                                                         #
-#     * Redistributions in binary form must reproduce the above copyright #
-#       notice, this list of conditions and the following disclaimer in   #
-#       the documentation and/or other materials provided with the        #
-#       distribution.                                                     #
-#                                                                         #
-#     * Neither the name of UChicago Argonne, LLC, Argonne National       #
-#       Laboratory, ANL, the U.S. Government, nor the names of its        #
-#       contributors may be used to endorse or promote products derived   #
-#       from this software without specific prior written permission.     #
-#                                                                         #
-# THIS SOFTWARE IS PROVIDED BY UChicago Argonne, LLC AND CONTRIBUTORS     #
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT       #
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS       #
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL UChicago     #
-# Argonne, LLC OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,        #
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,    #
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;        #
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER        #
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT      #
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN       #
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE         #
-# POSSIBILITY OF SUCH DAMAGE.                                             #
-# #########################################################################
+"""
+
+
+This is the flux calculator widget implemented for the Elettra Extension
+It uses a spectral power produced either by Xoppy or by SRW to calculate the photon flux from a source.
+If there is only one object attached to the widget, it spits out the total number of photons the source
+emits.
+If there is also a Shadow beamline, it uses the algorithm by L. Rebuffi to trim the total emitted flux according
+to the bandwidth produced by the beamline.
+
+The code is based heavily on the APS extension "Flux Calculator" widget (C) Copyright (c) 2018, UChicago Argonne, LLC,
+as devised and implemented by L. Rebuffi.
+
+It uses the spectral power to calculate the photon flux (ph/s) emitted by the source.
+
+using h=6.626 * 10^-34 Js
+      c=2.9979 * 10^8 m/s
+photon flux= power * lambda/(hc)
+bringing in all the numbers and leaving out the exponents yields: hc=19.86*10^-26
+photon_flux=power*lambda/19.86  in units of 10^17 ph/s, a factor which is added after.
+
+Column formats:
+Xoppy :
+
+column 0: energy in eV
+column 1: flux in photons/sec/0.1%bw
+column 2: spectral power (W/eV)
+column 3: cumulated power(W)
+
+SRW data format:
+
+column 0: Energy in eV
+column 1: Flux Density (Multi Electron)
+column 2: Spectral Flux Density (Single Electron)
+column 3: Spectral Power(W/eV)
+column 4: Cumulated Power (W)
+
+
+"""
+
 
 import sys, numpy, os
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QLabel, QSizePolicy
+from PyQt5.QtWidgets import QMessageBox, QLabel, QSizePolicy, QApplication
 from PyQt5.QtGui import QPixmap
 
 import orangecanvas.resources as resources
@@ -69,8 +65,8 @@ class FluxCalculator(AutomaticElement):
     name = "Flux Calculator"
     description = "Tools: Flux Calculator"
     icon = "icons/flux.png"
-    maintainer = "Luca Rebuffi"
-    maintainer_email = "lrebuffi(@at@)anl.gov"
+    maintainer = "Matteo Altissimo"
+    maintainer_email = "matteo.altissimo(@at@)elettra.eu"
     priority = 10
     category = "User Defined"
     keywords = ["data", "file", "load", "read"]
@@ -88,7 +84,7 @@ class FluxCalculator(AutomaticElement):
 
     input_beam     = None
     input_spectrum = None
-    flux_index = -1
+    spectral_power_index= -1
 
     usage_path = os.path.join(resources.package_dirname("orangecontrib.elettra.shadow.widgets.extension"), "misc", "flux_calculator.png")
 
@@ -144,29 +140,32 @@ class FluxCalculator(AutomaticElement):
         if not data is None:
             try:
                 if data.get_program_name() == "XOPPY":
-                    if data.get_widget_name() == "UNDULATOR_FLUX" or data.get_widget_name() == "XWIGGLER" or data.get_widget_name() == "WS":
-                        self.flux_index = 1
+                    if data.get_widget_name() == "UNDULATOR_FLUX" or data.get_widget_name() == "XWIGGLER" :
+                        self.spectral_power_index = 2
                     elif data.get_widget_name() == "BM":
-                        self.flux_index = 5
+                        self.spectral_power_index= 6
                     else:
-                        raise Exception("Connect to one of the following XOPPY widgets: Undulator Spectrum, BM, XWIGGLER, WS")
+                        raise Exception("Connect to one of the following XOPPY widgets: Undulator Spectrum, BM, XWIGGLER")
 
                     self.input_spectrum = data.get_content('xoppy_data')
                 elif data.get_program_name() == "SRW":
+
                     if data.get_widget_name() == "UNDULATOR_SPECTRUM":
-                        self.flux_index = 1
+                        self.spectral_power_index = 3
                     else:
                         raise Exception("Connect to one of the following SRW widgets: Undulator Spectrum")
 
                     self.input_spectrum = data.get_content('srw_data')
+
                 else:
-                    raise ValueError("Widget accept data from the following Add-ons: XOPPY, SRW")
+                    raise ValueError("Widget accepts data from the following Add-ons: XOPPY, SRW")
 
                 if self.is_automatic_run: self.calculate_flux()
             except Exception as exception:
                 QMessageBox.critical(self, "Error", str(exception), QMessageBox.Ok)
 
                 if self.IS_DEVELOP: raise exception
+
 
     def calculate_flux(self):
         if not self.input_beam is None and not self.input_spectrum is None:
@@ -175,12 +174,15 @@ class FluxCalculator(AutomaticElement):
 
                 total_text = ttext
 
-                flux_at_sample, ttext = calculate_flux_at_sample(self.input_spectrum, self.flux_index, flux_factor, energy)
+                total_photons_flux, ttext=calculate_source_flux(self.input_spectrum , self.spectral_power_index)
+                flux_at_sample, ttext = calculate_flux_at_sample(self.input_spectrum, self.spectral_power_index, flux_factor, energy)
 
                 total_text += "\n" + ttext
 
+                total_text += "\n\---> The total emitted photon flux is: ", "%.3g" % total_photons_flux, " ph/s"
                 total_text += "\n\n ---> Flux at Image Plane : %g"%flux_at_sample + " ph/s"
                 total_text += "\n ---> Resolving Power: %g"%resolving_power
+
 
                 self.text.clear()
                 self.text.setText(total_text)
@@ -190,6 +192,20 @@ class FluxCalculator(AutomaticElement):
                 QMessageBox.critical(self, "Error", str(exception), QMessageBox.Ok)
 
                 if self.IS_DEVELOP: raise exception
+
+
+
+
+def calculate_source_flux(input_spectrum, spectral_power_index):
+    ticket=input_spectrum
+
+    lambda_vector=1239.8/ticket[:,0]
+    photon_flux=(ticket[:,spectral_power_index]*lambda_vector/19.86)*10**17
+    total_photon_flux=np.sum(photon_flux)
+
+
+
+
 
 def calculate_flux_factor_and_resolving_power(beam):
     ticket = beam._beam.histo1(11, nbins=2, nolost=1)
@@ -253,7 +269,7 @@ def calculate_flux_at_sample(spectrum, flux_index, flux_factor, energy):
 
 
 if __name__ == "__main__":
-    a = QtGui.QApplication(sys.argv)
+    a = QApplication(sys.argv)
     ow = FluxCalculator()
     ow.show()
     a.exec_()
