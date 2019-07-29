@@ -6,7 +6,6 @@ import orangecanvas.resources as resources
 #from oasys.widgets.error_profile.ow_abstract_height_profile_simulator import OWAbstractHeightErrorProfileSimulator
 from orangecontrib.elettra.util.gui.ow_elettra_widget import ELETTRAWidget
 
-
 from Shadow import ShadowTools as ST
 from orangecontrib.shadow.util.shadow_objects import ShadowPreProcessorData
 
