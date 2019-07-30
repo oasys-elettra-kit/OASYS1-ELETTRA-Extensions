@@ -3,13 +3,15 @@ from PyQt5.QtWidgets import QApplication
 
 import orangecanvas.resources as resources
 
-#from oasys.widgets.error_profile.ow_abstract_height_profile_simulator import OWAbstractHeightErrorProfileSimulator
-from orangecontrib.elettra.util.gui.ow_elettra_widget import ELETTRAWidget
+from oasys.widgets.error_profile.ow_abstract_height_profile_simulator import OWAbstractHeightErrorProfileSimulator
+# from orangecontrib.elettra.util.gui.ow_elettra_widget import ELETTRAWidget
+# from orangecontrib.shadow.widgets.gui.ow_automatic_element import AutomaticElement
 
 from Shadow import ShadowTools as ST
 from orangecontrib.shadow.util.shadow_objects import ShadowPreProcessorData
 
-class OWthermal_load(ELETTRAWidget):
+
+class OWthermal_load(OWAbstractHeightErrorProfileSimulator):
     name = "Thermal load data converter"
     description = "Converter from FE simulations to Shadow format"
     icon = "icons/simulator.png"
@@ -17,7 +19,7 @@ class OWthermal_load(ELETTRAWidget):
     maintainer_email = "aljosa.hafner@ceric-eric.eu"
     priority = 10
     category = "User Defined"
-    keywords = ["surface_data_converter"]
+    keywords = ["thermal", "load", "converter"]
 
     outputs = [{"name": "PreProcessor_Data",
                 "type": ShadowPreProcessorData,
