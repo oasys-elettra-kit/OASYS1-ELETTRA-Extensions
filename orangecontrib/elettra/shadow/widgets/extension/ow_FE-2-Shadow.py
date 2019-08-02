@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import QApplication
 
 import orangecanvas.resources as resources
 
-from oasys.widgets.error_profile.ow_abstract_thermal_load_converter import OWAbstractThermalLoadConverter
-
+from orangecontrib.elettra.util.ow_abstract_thermal_load_converter import OWAbstractThermalLoadConverter
 from orangecontrib.shadow.util.shadow_objects import ShadowPreProcessorData
 
 class OWthermal_load(OWAbstractThermalLoadConverter):
