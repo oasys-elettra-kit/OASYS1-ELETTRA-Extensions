@@ -6,12 +6,10 @@ from scipy.interpolate import griddata
 from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QLabel, QSizePolicy
 from PyQt5.QtGui import QTextCursor, QFont, QPalette, QColor, QPixmap
-from srxraylib.metrology import profiles_simulation
 
 from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.pylab import colorbar
 
 from orangewidget import gui, widget
 from orangewidget.settings import Setting
@@ -354,8 +352,8 @@ class OWAbstractThermalLoadConverter(OWWidget):
         self.generate_FEtoShadow(self)
 
     def selectFile_save(self):
-        self.wi_save_height_profile_file_name.setText(oasysgui.selectDirectoryFromDialog(self, "Select Output Folder", self.save_height_profile_file_name))
-        self.save_height_profile_file_name = self.save_height_profile_file_name + '/FEtoShadow.dat'
+        self.wi_save_height_profile_file_name.setText(oasysgui.selectDirectoryFromDialog(self, "Select Output Folder"))
+        self.generate_FEtoShadow(self)
 
     def get_axis_um(self):
         return "m"
