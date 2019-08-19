@@ -9,7 +9,7 @@ from orangecontrib.elettra.util.gui.ow_abstract_thermal_load_converter import OW
 class OWthermal_load(OWAbstractThermalLoadConverter):
     name = "Thermal load data converter"
     description = "Converter from FE simulations to Shadow format"
-    icon = "icons/simulator.png"
+    icon = "icons/thermal_load.png"
     author = "Aljosa Hafner"
     maintainer_email = "aljosa.hafner@ceric-eric.eu"
     priority = 10

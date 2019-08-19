@@ -6,7 +6,7 @@ except AttributeError:
     from setuptools import find_packages, setup
 
 NAME = 'OASYS1-Elettra-Extensions'
-VERSION = '0.0.1'
+VERSION = '0.0.3'
 ISRELEASED = True
 
 DESCRIPTION = 'OASYS extensions for Elettra'
@@ -18,20 +18,20 @@ URL = 'https://github.com/oasys-elettra-kit/OASYS1-ELETTRA-Extensions'
 DOWNLOAD_URL = 'https://github.com/oasys-elettra-kit/OASYS1-ELETTRA-Extensions'
 LICENSE = 'GPLv3'
 
-KEYWORDS = (
+KEYWORDS = [
     'raytracing',
     'simulator',
     'oasys1',
-)
+]
 
-CLASSIFIERS = (
+CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Environment :: X11 Applications :: Qt',
     'Environment :: Console',
     'Environment :: Plugins',
     'Programming Language :: Python :: 3',
     'Intended Audience :: Science/Research',
-)
+]	
 
 SETUP_REQUIRES = (
     'setuptools',
