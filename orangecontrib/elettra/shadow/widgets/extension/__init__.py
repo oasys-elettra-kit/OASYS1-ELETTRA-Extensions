@@ -1,6 +1,6 @@
 # Category description for the widget registry
 
-NAME = "ShadowOui Elettra Extension"
+NAME = "Elettra ShadowOui Extension"
 
 DESCRIPTION = "Widgets for ShadowOui"
 

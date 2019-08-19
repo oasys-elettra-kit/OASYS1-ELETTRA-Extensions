@@ -10,9 +10,9 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     name = "Thermal load data converter"
     description = "Converter from FE simulations to Shadow format"
     icon = "icons/thermal_load.png"
-    author = "Aljosa Hafner"
+    maintainer = "Aljosa Hafner"
     maintainer_email = "aljosa.hafner@ceric-eric.eu"
-    priority = 10
+    priority = 1
     category = "User Defined"
     keywords = ["thermal", "load", "converter"]
 
@@ -21,8 +21,8 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     #             "doc": "PreProcessor Data",
     #             "id": "PreProcessor_Data"}]
 
-    #TODO: Here comes the usage diagram, not so urgent...
-    usage_path = os.path.join(resources.package_dirname("orangecontrib.elettra.shadow.widgets.extension"), "misc", "height_error_profile_usage.png")
+    #TODO: Here comes the usage diagram, not so urgent, using the one from flux calculator at the moment...
+    usage_path = os.path.join(resources.package_dirname("orangecontrib.elettra.shadow.widgets.extension"), "misc", "thermal_load_usage.png")
 
     def __init__(self):
         super().__init__()
