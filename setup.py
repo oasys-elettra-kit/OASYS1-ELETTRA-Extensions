@@ -6,7 +6,7 @@ except AttributeError:
     from setuptools import find_packages, setup
 
 NAME = 'OASYS1-Elettra-Extensions'
-VERSION = '0.0.3.3'
+VERSION = '0.0.3.4'
 ISRELEASED = True
 
 DESCRIPTION = 'OASYS extensions for Elettra'
