@@ -170,7 +170,7 @@ class FluxCalculator(AutomaticElement):
     def calculate_flux(self):
         if not self.input_beam is None and not self.input_spectrum is None:
             try:
-                flux_factor, resolving_power, energy, ttext = calculate_flux_factor_and_resolving_power(self.input_beam)
+                flux_factor, resolving_power, energy, ttext = calculate_source_flux(self.input_beam)
 
                 total_text = ttext
 
@@ -202,6 +202,8 @@ def calculate_source_flux(input_spectrum, spectral_power_index):
     lambda_vector=1239.8/ticket[:,0]
     photon_flux=(ticket[:,spectral_power_index]*lambda_vector/19.86)*10**17
     total_photon_flux=np.sum(photon_flux)
+
+    return total_photon_flux
 
 
 
