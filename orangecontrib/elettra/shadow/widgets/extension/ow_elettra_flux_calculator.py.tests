@@ -64,7 +64,7 @@ class FluxCalculator(AutomaticElement):
 
     name = "Flux Calculator"
     description = "Tools: Flux Calculator"
-    icon = "icons/flux.png"
+    icon = "icons/flux_calculator.png"
     maintainer = "Matteo Altissimo"
     maintainer_email = "matteo.altissimo(@at@)elettra.eu"
     priority = 10
