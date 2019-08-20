@@ -8,11 +8,12 @@ from orangecontrib.elettra.util.gui.ow_abstract_thermal_load_converter import OW
 
 class OWthermal_load(OWAbstractThermalLoadConverter):
     name = "Thermal load data converter"
+    id = "thermal_load_data_converter"
     description = "Converter from FE simulations to Shadow format"
     icon = "icons/thermal_load.png"
     maintainer = "Aljosa Hafner"
     maintainer_email = "aljosa.hafner@ceric-eric.eu"
-    priority = 1
+    priority = 5
     category = "User Defined"
     keywords = ["thermal", "load", "converter"]
 
@@ -72,10 +73,10 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     def get_axis_um(self):
         return self.workspace_units_label
 
-    def send_data(self, dimension_x, dimension_y):
-        self.send("PreProcessor_Data", ShadowPreProcessorData(error_profile_data_file=self.heigth_profile_file_name,
-                                                              error_profile_x_dim=dimension_x,
-                                                              error_profile_y_dim=dimension_y))
+    # def send_data(self, dimension_x, dimension_y):
+    #     self.send("PreProcessor_Data", ShadowPreProcessorData(error_profile_data_file=self.heigth_profile_file_name,
+    #                                                           error_profile_x_dim=dimension_x,
+    #                                                           error_profile_y_dim=dimension_y))
     # def write_error_profile_file(self):
     #     ST.write_shadow_surface(self.zz, self.xx, self.yy, self.heigth_profile_file_name)
 
