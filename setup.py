@@ -6,7 +6,7 @@ except AttributeError:
     from setuptools import find_packages, setup
 
 NAME = 'OASYS1-Elettra-Extensions'
-VERSION = '0.0.3.14'
+VERSION = '0.0.3.16'
 ISRELEASED = True
 
 DESCRIPTION = 'OASYS extensions for Elettra'
@@ -44,35 +44,19 @@ INSTALL_REQUIRES = (
 PACKAGES = find_packages(exclude=('*.tests', '*.tests.*', 'tests.*', 'tests'))
 
 PACKAGE_DATA = {
-    "orangecontrib.elettra.wofry.widgets.extension":["icons/*.png", "icons/*.jpg"],
-    "orangecontrib.elettra.syned.widgets.extension":["icons/*.png", "icons/*.jpg"],
     "orangecontrib.elettra.shadow.widgets.extension":["icons/*.png", "icons/*.jpg", "misc/*.txt"],
-    "orangecontrib.elettra.srw.widgets.extension":["icons/*.png", "icons/*.jpg"],
 }
 
 NAMESPACE_PACAKGES = ["orangecontrib",
                       "orangecontrib.elettra",
-                      "orangecontrib.elettra.wofry",
-                      "orangecontrib.elettra.syned",
                       "orangecontrib.elettra.shadow",
-                      "orangecontrib.elettra.srw",
-                      "orangecontrib.elettra.wofry.widgets",
-                      "orangecontrib.elettra.syned.widgets",
                       "orangecontrib.elettra.shadow.widgets",
-                      "orangecontrib.elettra.srw.widgets",
                       ]
 
 ENTRY_POINTS = {
-    'oasys.addons' : ("WOFRY Elettra Extension = orangecontrib.elettra.wofry",
-                      "SYNED Elettra Extension = orangecontrib.elettra.syned",
-                      "Shadow Elettra Extension = orangecontrib.elettra.shadow",
-                      "SRW Elettra Extension = orangecontrib.elettra.srw",
+    'oasys.addons' : ("Shadow Elettra Extension = orangecontrib.elettra.shadow",
                       ),
-    'oasys.widgets' : (
-        "WOFRY Elettra Extension = orangecontrib.elettra.wofry.widgets.extension",
-        "SYNED Elettra Extension = orangecontrib.elettra.syned.widgets.extension",
-        "Shadow Elettra Extension = orangecontrib.elettra.shadow.widgets.extension",
-        "SRW Elettra Extension = orangecontrib.elettra.srw.widgets.extension",
+    'oasys.widgets' : ("Shadow Elettra Extension = orangecontrib.elettra.shadow.widgets.extension",
     ),
     'oasys.menus' : ("elettraoasysmenu = orangecontrib.elettra.menu",)
 }

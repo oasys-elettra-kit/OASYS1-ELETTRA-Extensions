@@ -1,20 +1,20 @@
-import os, sys
 from PyQt5.QtWidgets import QApplication
+
+import os, sys
 
 import orangecanvas.resources as resources
 
 from orangecontrib.elettra.util.gui.ow_abstract_thermal_load_converter import OWAbstractThermalLoadConverter
-# from orangecontrib.shadow.util.shadow_objects import ShadowPreProcessorData
 
 class OWthermal_load(OWAbstractThermalLoadConverter):
     name = "Thermal load data converter"
     id = "thermal_load_data_converter"
     description = "Converter from FE simulations to Shadow format"
     icon = "icons/thermal_load.png"
-    maintainer = "Aljosa Hafner"
-    maintainer_email = "aljosa.hafner@ceric-eric.eu"
-    priority = 5
-    category = "User Defined"
+    author = "Aljosa Hafner"
+    author_email = "aljosa.hafner(@at@)ceric-eric.eu"
+    priority = 2
+    category = ""
     keywords = ["thermal", "load", "converter"]
 
     # outputs = [{"name": "PreProcessor_Data",
@@ -28,45 +28,6 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     def __init__(self):
         super().__init__()
 
-    def after_change_workspace_units(self):
-        self.si_to_user_units = 1 / self.workspace_units_to_m
-
-        self.axis.set_xlabel("X [" + self.workspace_units_label + "]")
-        self.axis.set_ylabel("Y [" + self.workspace_units_label + "]")
-
-        label = self.le_dimension_y.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_step_y.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_correlation_length_y.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-
-        label = self.le_dimension_x.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_step_x.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_correlation_length_x.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-
-        label = self.le_conversion_factor_y_x.parent().layout().itemAt(0).widget()
-        label.setText("Conversion from file to " + self.workspace_units_label + "\n(Abscissa)")
-        label = self.le_conversion_factor_y_y.parent().layout().itemAt(0).widget()
-        label.setText("Conversion from file to " + self.workspace_units_label + "\n(Height Profile Values)")
-        label = self.le_conversion_factor_x_x.parent().layout().itemAt(0).widget()
-        label.setText("Conversion from file to " + self.workspace_units_label + "\n(Abscissa)")
-        label = self.le_conversion_factor_x_y.parent().layout().itemAt(0).widget()
-        label.setText("Conversion from file to " + self.workspace_units_label + "\n(Height Profile Values)")
-
-        label = self.le_new_length_y_1.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_new_length_y_2.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_new_length_x_1.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-        label = self.le_new_length_x_2.parent().layout().itemAt(0).widget()
-        label.setText(label.text() + " [" + self.workspace_units_label + "]")
-
-
     def get_usage_path(self):
         return self.usage_path
 
@@ -79,10 +40,3 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     #                                                           error_profile_y_dim=dimension_y))
     # def write_error_profile_file(self):
     #     ST.write_shadow_surface(self.zz, self.xx, self.yy, self.heigth_profile_file_name)
-
-if __name__ == "__main__":
-    a = QApplication(sys.argv)
-    ow = OWthermal_load()
-    ow.show()
-    a.exec_()
-    ow.saveSettings()

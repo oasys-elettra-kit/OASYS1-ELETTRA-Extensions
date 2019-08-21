@@ -1,4 +1,4 @@
-import os, sys
+import sys
 
 from numpy import loadtxt, mgrid, array, savetxt, zeros, abs
 from scipy.interpolate import griddata
@@ -9,23 +9,21 @@ from PyQt5.QtGui import QTextCursor, QFont, QPalette, QColor, QPixmap
 
 from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+from matplotlib.pylab import subplots
 
-from orangewidget import gui, widget
+from orangewidget import gui
 from orangewidget.settings import Setting
-
+from orangewidget.widget import OWAction
 from oasys.widgets.widget import OWWidget
 from oasys.widgets import gui as oasysgui
 from oasys.widgets import congruence
 from oasys.widgets.gui import ConfirmDialog
 from oasys.util.oasys_util import EmittingStream
 
-try:
-    from mpl_toolkits.mplot3d import Axes3D  # necessario per caricare i plot 3D
-except:
-    pass
-
 class OWAbstractThermalLoadConverter(OWWidget):
+    author = "Aljosa Hafner"
+    maintainer_email = "aljosa.hafner@ceric-eric.eu"
+
     want_main_area = True
     want_control_area = True
 
@@ -51,17 +49,17 @@ class OWAbstractThermalLoadConverter(OWWidget):
     simFE_fname = Setting("FEM_matrix.dat")
     save_height_profile_file_name = Setting('FEtoShadow.dat')
 
-    inputs=[("FE 2D array", array, "selectFile")]
+    # inputs=[("FE 2D array", array, "selectFile")]
 
     def __init__(self):
         super().__init__()
 
         #/ Make GUI ----------------------------------------------------------------------------------------------------
-        self.runaction = widget.OWAction("Import Simulated Array", self)
+        self.runaction = OWAction("Import Simulated Array", self)
         self.runaction.triggered.connect(self.selectFile)
         self.addAction(self.runaction)
 
-        self.runaction = widget.OWAction("Generate Height Profile File", self)
+        self.runaction = OWAction("Generate Height Profile File", self)
         self.runaction.triggered.connect(self.interp_save)
         self.addAction(self.runaction)
 
@@ -163,10 +161,8 @@ class OWAbstractThermalLoadConverter(OWWidget):
 
         gui.rubber(self.controlArea)
 
-        self.figure = Figure(figsize=(600, 600))
-        self.figure.patch.set_facecolor('white')
-
-        self.axis = self.figure.add_subplot(111)
+        self.figure, (self.axis, self.cax) = subplots(1, 2, gridspec_kw={'width_ratios': [95, 5]}, figsize=(600, 600))
+        self.cax.grid()
 
         self.figure_canvas = FigureCanvasQTAgg(self.figure)
         self.mainArea.layout().addWidget(self.figure_canvas)
@@ -213,7 +209,8 @@ class OWAbstractThermalLoadConverter(OWWidget):
 
             # self.interp_save()
 
-            self.axis.clear()
+
+            self.axis.cla()
 
             if self.unit == 0: # metres [m]
                 uname = 'm'
@@ -222,14 +219,14 @@ class OWAbstractThermalLoadConverter(OWWidget):
                 uname = 'cm'
                 unit = 1e2
 
-            im = self.axis.contourf(grid[0] * unit, grid[1] * unit, grid_z * 1e9, cmap='jet')
+            im = self.axis.contourf(grid[0] * unit, grid[1] * unit, grid_z * 1e9, levels = 32, cmap='jet')
 
             self.axis.set_xlabel("X [{}]".format(uname))
             self.axis.set_ylabel("Y [{}]".format(uname))
             self.axis.set_xlim(min(x) * unit, max(x) * unit)
             self.axis.set_ylim(min(y) * unit, max(y) * unit)
             self.axis.set_title('Interpolated surface')
-            cb = self.figure.colorbar(im)
+            cb = self.figure.colorbar(im, cax=self.cax)
             cb.ax.set_ylabel('Z [nm]')
 
             self.interp_grid_x = grid[0]
@@ -357,3 +354,10 @@ class OWAbstractThermalLoadConverter(OWWidget):
 
     def get_axis_um(self):
         return "m"
+
+if __name__ == "__main__":
+    a = QApplication(sys.argv)
+    ow = OWAbstractThermalLoadConverter()
+    ow.show()
+    a.exec_()
+    ow.saveSettings()
