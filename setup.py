@@ -38,7 +38,7 @@ SETUP_REQUIRES = (
 )
 
 INSTALL_REQUIRES = (
-    'setuptools',
+    'setuptools', 'pandas',
 )
 
 PACKAGES = find_packages(exclude=('*.tests', '*.tests.*', 'tests.*', 'tests'))
