@@ -1,6 +1,7 @@
 import sys
 
 from numpy import loadtxt, mgrid, array, savetxt, zeros, abs
+from pandas import read_csv
 from scipy.interpolate import griddata
 
 from PyQt5.QtCore import QRect, Qt
@@ -185,19 +186,26 @@ class OWAbstractThermalLoadConverter(OWWidget):
         try:
             sys.stdout = EmittingStream(textWritten=self.writeStdOut)
 
-            node, number, x, y, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True)
+            # node, number, y, x, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
+            readfile = read_csv(self.simFE_fname, sep='\t', decimal=',')
+            node = readfile['Facet'].values
+            number = readfile['Point'].values
+            y = readfile['Y Coordinate (mm)'].values * 1e-3 # Convert to metres
+            x = readfile['X Coordinate (mm)'].values * 1e-3
+            z = readfile['Directional Deformation (mm)'].values * 1e-3
+
 
             if self.method == 0: # Spacing
                 noPts = (abs(min(x)) + abs(max(x))) / self.spacing_value
                 step = self.spacing_value
-                if noPts > 500:
+                if noPts > 5000:
                     QMessageBox.critical(self, "Error",
                                          "Select larger spacing. Current number of points: {}\nNumber of points cannot be larger than 500!".format(int(noPts)), QMessageBox.Ok)
                 else:
                     grid = mgrid[min(x):max(x)+step:step, min(y):max(y)+step:step]
 
             elif self.method == 1: # Number of points
-                if self.noPts_x > 500:
+                if self.noPts_x > 5000:
                     QMessageBox.critical(self, "Error",
                                          "Select fewer points in x.\nNumber of points cannot be larger than 500!", QMessageBox.Ok)
                 else:
