@@ -6,14 +6,14 @@ except AttributeError:
     from setuptools import find_packages, setup
 
 NAME = 'OASYS1-Elettra-Extensions'
-VERSION = '0.1'
+VERSION = '0.2'
 ISRELEASED = True
 
 DESCRIPTION = 'OASYS extensions for Elettra'
 README_FILE = os.path.join(os.path.dirname(__file__), 'README.md')
 LONG_DESCRIPTION = open(README_FILE).read()
-AUTHOR = 'Matteo Altissimo'
-AUTHOR_EMAIL = 'matteo.altissimo@elettra.eu'
+AUTHOR = 'Aljosa Hafner'
+AUTHOR_EMAIL = 'aljosa.hafner@ceric-eric.eu'
 URL = 'https://github.com/oasys-elettra-kit/OASYS1-ELETTRA-Extensions'
 DOWNLOAD_URL = 'https://github.com/oasys-elettra-kit/OASYS1-ELETTRA-Extensions'
 LICENSE = 'GPLv3'
