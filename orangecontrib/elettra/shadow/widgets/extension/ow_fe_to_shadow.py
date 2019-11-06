@@ -40,3 +40,10 @@ class OWthermal_load(OWAbstractThermalLoadConverter):
     #                                                           error_profile_y_dim=dimension_y))
     # def write_error_profile_file(self):
     #     ST.write_shadow_surface(self.zz, self.xx, self.yy, self.heigth_profile_file_name)
+#
+# if __name__ == "__main__":
+#     a = QApplication(sys.argv)
+#     ow = OWthermal_load()
+#     ow.show()
+#     a.exec_()
+#     ow.saveSettings()
