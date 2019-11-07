@@ -187,12 +187,12 @@ class OWAbstractThermalLoadConverter(OWWidget):
             sys.stdout = EmittingStream(textWritten=self.writeStdOut)
 
             # node, number, y, x, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
-            readfile = read_csv(self.simFE_fname, sep='\t', decimal=',')
-            node = readfile['Facet'].values
-            number = readfile['Point'].values
-            y = readfile['Y Coordinate (mm)'].values * 1e-3 # Convert to metres
-            x = readfile['X Coordinate (mm)'].values * 1e-3
-            z = readfile['Directional Deformation (mm)'].values * 1e-3
+            readfile = read_csv(self.simFE_fname, sep='\t', decimal=',').values
+            node = readfile[:,0]
+            number = readfile[:,1]
+            y = readfile[:,2] * 1e-3 # Convert to metres
+            x = readfile[:,3] * 1e-3
+            z = readfile[:,4] * 1e-3
 
 
             if self.method == 0: # Spacing
