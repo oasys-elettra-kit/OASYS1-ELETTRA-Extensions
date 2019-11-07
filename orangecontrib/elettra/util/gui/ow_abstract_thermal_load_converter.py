@@ -186,13 +186,13 @@ class OWAbstractThermalLoadConverter(OWWidget):
         try:
             sys.stdout = EmittingStream(textWritten=self.writeStdOut)
 
-            # node, number, y, x, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
-            readfile = read_csv(self.simFE_fname, sep='\t', decimal=',').values
-            node = readfile[:,0]
-            number = readfile[:,1]
-            y = readfile[:,2] * 1e-3 # Convert to metres
-            x = readfile[:,3] * 1e-3
-            z = readfile[:,4] * 1e-3
+            node, number, y, x, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
+            # readfile = read_csv(self.simFE_fname, sep='\t', decimal=',').values
+            # node = readfile[:,0]
+            # number = readfile[:,1]
+            # y = readfile[:,2] * 1e-3 # Convert to metres
+            # x = readfile[:,3] * 1e-3
+            # z = readfile[:,4] * 1e-3
 
 
             if self.method == 0: # Spacing
@@ -200,14 +200,14 @@ class OWAbstractThermalLoadConverter(OWWidget):
                 step = self.spacing_value
                 if noPts > 5000:
                     QMessageBox.critical(self, "Error",
-                                         "Select larger spacing. Current number of points: {}\nNumber of points cannot be larger than 500!".format(int(noPts)), QMessageBox.Ok)
+                                         "Select larger spacing. Current number of points: {}\nNumber of points cannot be larger than 5000!".format(int(noPts)), QMessageBox.Ok)
                 else:
                     grid = mgrid[min(x):max(x)+step:step, min(y):max(y)+step:step]
 
             elif self.method == 1: # Number of points
                 if self.noPts_x > 5000:
                     QMessageBox.critical(self, "Error",
-                                         "Select fewer points in x.\nNumber of points cannot be larger than 500!", QMessageBox.Ok)
+                                         "Select fewer points in x.\nNumber of points cannot be larger than 5000!", QMessageBox.Ok)
                 else:
                     grid = mgrid[min(x):max(x):(1j*self.noPts_x), min(y):max(y):(1j*self.noPts_y)]
             else:
@@ -290,7 +290,7 @@ class OWAbstractThermalLoadConverter(OWWidget):
         self.interp_grid_y = self.interp_grid_y * unit
         final_array = zeros((grid_z.shape[0], grid_z.shape[1] + 1))
         final_array[:,0] = self.interp_grid_y[0,:]
-        final_array[:,1:] = grid_z
+        final_array[:,1:] = grid_z * unit
 
         head_1 = '{} {}\n'.format(grid_z.shape[0], grid_z.shape[1])
         head_2 = ' '.join(str(n) for n in self.interp_grid_x[:, 0])
