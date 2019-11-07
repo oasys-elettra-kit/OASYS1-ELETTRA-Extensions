@@ -186,7 +186,7 @@ class OWAbstractThermalLoadConverter(OWWidget):
         try:
             sys.stdout = EmittingStream(textWritten=self.writeStdOut)
 
-            node, number, y, x, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
+            node, number, y, x, z_coord, el_no, z = loadtxt(self.simFE_fname, skiprows=1, unpack=True) # Import from ANSYS, first Y, then X, Z
             # readfile = read_csv(self.simFE_fname, sep='\t', decimal=',').values
             # node = readfile[:,0]
             # number = readfile[:,1]
