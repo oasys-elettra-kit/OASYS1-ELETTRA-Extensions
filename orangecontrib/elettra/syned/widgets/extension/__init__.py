@@ -1,1 +1,10 @@
-__import__("pkg_resources").declare_namespace(__name__)
+
+NAME = "Syned Elettra Extension"
+
+DESCRIPTION = "Widgets for Syned Elettra Extension"
+
+BACKGROUND = "#ECCFAF"
+
+ICON = "icons/LogoElettra_transparent.png"
+
+PRIORITY = 10.6

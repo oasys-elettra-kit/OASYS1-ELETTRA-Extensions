@@ -6,7 +6,7 @@ except AttributeError:
     from setuptools import find_packages, setup
 
 NAME = 'OASYS1-Elettra-Extensions'
-VERSION = '0.2.6'
+VERSION = '0.2.7'
 ISRELEASED = True
 
 DESCRIPTION = 'OASYS extensions for Elettra'
@@ -45,19 +45,24 @@ PACKAGES = find_packages(exclude=('*.tests', '*.tests.*', 'tests.*', 'tests'))
 
 PACKAGE_DATA = {
     "orangecontrib.elettra.shadow.widgets.extension":["icons/*.png", "icons/*.jpg", "misc/*.txt"],
+    "orangecontrib.elettra.syned.widgets.extension":["icons/*.png", "icons/*.jpg", "misc/*.txt"],
 }
 
 NAMESPACE_PACAKGES = ["orangecontrib",
                       "orangecontrib.elettra",
                       "orangecontrib.elettra.shadow",
+                      "orangecontrib.elettra.syned",
                       "orangecontrib.elettra.shadow.widgets",
+                      "orangecontrib.elettra.syned.widgets",
                       ]
 
 ENTRY_POINTS = {
     'oasys.addons' : ("Shadow Elettra Extension = orangecontrib.elettra.shadow",
+                      "Syned Elettra Extension = orangecontrib.elettra.syned",
                       ),
     'oasys.widgets' : ("Shadow Elettra Extension = orangecontrib.elettra.shadow.widgets.extension",
-    ),
+                       "Syned Elettra Extension = orangecontrib.elettra.syned.widgets.extension",
+                      ),
     'oasys.menus' : ("elettraoasysmenu = orangecontrib.elettra.menu",)
 }
 

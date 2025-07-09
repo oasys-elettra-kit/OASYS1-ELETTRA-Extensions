@@ -5,6 +5,7 @@ recursive-include orangecontrib/elettra/wofry/widgets *.png *.svg *.ico *.jpg *.
 recursive-include orangecontrib/elettra/syned/widgets *.png *.svg *.ico *.jpg *.bmp
 recursive-include orangecontrib/elettra/shadow/widgets *.png *.svg *.ico *.jpg *.bmp *.txt
 recursive-include orangecontrib/elettra/srw/widgets *.png *.svg *.ico *.jpg *.bmp
+recursive-include orangecontrib/elettra/syned/data *
 
 include README.md
 include LICENSE

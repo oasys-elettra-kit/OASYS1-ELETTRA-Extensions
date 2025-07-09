@@ -1,0 +1,24 @@
+{
+    "CLASS_NAME": "LightSource",
+    "name": "Elettra short Straight  - Twiss",
+    "electron_beam": {
+        "CLASS_NAME": "ElectronBeam",
+        "energy_in_GeV": 2.4,
+        "energy_spread": 0.000997,
+        "current": 0.4,
+        "number_of_bunches": 400,
+        "moment_xx": 4.454285241000001e-09,
+        "moment_xxp": 0.0,
+        "moment_xpxp": 3.704347826086956e-11,
+        "moment_yy": 1.88e-11,
+        "moment_yyp": 0.0,
+        "moment_ypyp": 4.7e-12
+    },
+    "magnetic_structure": {
+        "CLASS_NAME": "Undulator",
+        "K_vertical": 0.0,
+        "K_horizontal": 0.0,
+        "period_length": 0.0,
+        "number_of_periods": 0.0
+    }
+}
