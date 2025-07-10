@@ -271,19 +271,21 @@ class OWELETTRA2(OWWidget):
                           callback=self.auto_set_undulator_V)
 
         self.initializeTabs()
-        self.populate_magnetic_structure()
+        #self.get_magnetic_structure()
         self.set_visible()
         self.update()
 
     def get_bl_list(self):
-        out_list = self.data_dict["beamline_name"]
+        out_list = [self.data_dict["beamline_name"][i] for i in
+                   range(len(self.data_dict["beamline_name"]))]
 
         out_list.insert(0,"<None>") # We add None at the beginning: elettra_bl_name is the dict index plus one
         return out_list
 
 
     def get_id_list(self):
-        out_list = self.data_dict["id_name"]
+        out_list = [self.data_dict["id_name"][i] for i in
+                   range(len(self.data_dict["id_name"]))]
 
         out_list.insert(0,"<None>") # We add None at the beginning: elettra_id_name is the dict index plus one
         return out_list
@@ -417,8 +419,8 @@ class OWELETTRA2(OWWidget):
             id_naming = "<None>"
             
         else:
-            id = self.data_dict["id_name"][self.elettra_id_index]
-            elettra_beamline = self.data_dict["beamline_name"][self.elettra_id_index]
+            id = self.data_dict["id_name"][self.elettra_id_index-1]
+            elettra_beamline = self.data_dict["beamline_name"][self.elettra_id_index-1]
             position = self.data_dict["position"][self.elettra_id_index-1]
             id_naming = self.data_dict["naming"][self.elettra_id_index-1]
 
@@ -555,15 +557,18 @@ Approximated coherent fraction at 1st harmonic:
 """
 
     def get_magnetic_structure(self, check_for_wiggler=False):
-
+        
         if not(check_for_wiggler):
             return Undulator(K_horizontal=self.K_horizontal,
                              K_vertical=self.K_vertical,
                              period_length=self.period_length,
                              number_of_periods=self.number_of_periods)
         else:
-            id_name = self.get_id_list()[self.elettra_id_index-1]
+            
+            id_name = self.get_id_list()[self.elettra_id_index]
+            
             if "W" in id_name:
+                
                 return Wiggler(K_horizontal=self.K_horizontal,
                                  K_vertical=self.K_vertical,
                                  period_length=self.period_length,
@@ -691,6 +696,7 @@ Approximated coherent fraction at 1st harmonic:
         self.check_magnetic_structure()
 
     def send_data(self):
+        self.update()
         try:
             self.check_data()
             self.send("SynedData", Beamline(light_source=self.get_light_source(check_for_wiggler=True)))
