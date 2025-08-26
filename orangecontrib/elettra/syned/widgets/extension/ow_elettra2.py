@@ -130,9 +130,7 @@ class OWELETTRA2(OWWidget):
     a6 = Setting('')
 
     #pow_dens_screen = Setting(30.0)
-
-    # data_url = 'ftp://ftp.esrf.eu/pub/scisoft/syned/resources/jsrund.csv'
-    # create it in nice with the ID app: /segfs/tango/bin/jsrund
+    
     data_url = os.path.join(resources.package_dirname("orangecontrib.elettra.syned.data"), 'elettra2_sources.csv')
     data_ls = os.path.join(resources.package_dirname("orangecontrib.elettra.syned.data"), 'Elettra_Long_Straight.json')
     data_ss = os.path.join(resources.package_dirname("orangecontrib.elettra.syned.data"), 'Elettra_Short_Straight.json')
@@ -141,9 +139,9 @@ class OWELETTRA2(OWWidget):
 
     def __init__(self):
 
-        self.get_data_dictionary_csv()
-        self.get_ls_electronbeam()
-        self.get_ss_electronbeam()         
+        self.get_data_dictionary_csv() #reads the CSV file with the sources info
+        self.get_ls_electronbeam() #reads long section e-beam parameters JSON
+        self.get_ss_electronbeam() #reads short section e-beam parameters JSON        
 
         self.runaction = widget.OWAction("Send Data", self)
         self.runaction.triggered.connect(self.send_data)
