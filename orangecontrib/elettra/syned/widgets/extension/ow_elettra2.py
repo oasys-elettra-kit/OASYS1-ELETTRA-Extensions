@@ -63,7 +63,7 @@ class OWELETTRA2(OWWidget):
 
 
     MAX_WIDTH = 1320
-    MAX_HEIGHT = 720
+    MAX_HEIGHT = 700
 
     IMAGE_WIDTH = 860
     IMAGE_HEIGHT = 645
@@ -205,14 +205,17 @@ class OWELETTRA2(OWWidget):
                      callback=self.update_electron_beam,
                      sendSelectedValue=False, orientation="horizontal")
 
-        self.left_box_2_1 = oasysgui.widgetBox(self.electron_beam_box, "", addSpace=False, orientation="vertical", height=150)
+        self.left_box_2_1 = oasysgui.widgetBox(self.electron_beam_box, "", addSpace=False, orientation="horizontal", height=150)
+        self.left_box_2_1_l = oasysgui.widgetBox(self.left_box_2_1, "", addSpace=False, orientation="vertical")
+        self.left_box_2_1_r = oasysgui.widgetBox(self.left_box_2_1, "", addSpace=False, orientation="vertical")
 
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_xx",   "<x x>   [m^2]",   labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_xxp",  "<x x'>  [m.rad]", labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_xpxp", "<x' x'> [rad^2]", labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_yy",   "<y y>   [m^2]",   labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_yyp",  "<y y'>  [m.rad]", labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
-        oasysgui.lineEdit(self.left_box_2_1, self, "moment_ypyp", "<y' y'> [rad^2]", labelWidth=260, valueType=float, orientation="horizontal",  callback=self.update)
+        oasysgui.lineEdit(self.left_box_2_1_l, self, "moment_xx",   "<xx>[m^2]",    labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
+        oasysgui.lineEdit(self.left_box_2_1_l, self, "moment_xxp",  "<xx'>[m.rad]", labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
+        oasysgui.lineEdit(self.left_box_2_1_l, self, "moment_xpxp", "<x'x'>[rad^2]",labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
+
+        oasysgui.lineEdit(self.left_box_2_1_r, self, "moment_yy",   "<yy>[m^2]",    labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
+        oasysgui.lineEdit(self.left_box_2_1_r, self, "moment_yyp",  "<yy'>[m.rad]", labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
+        oasysgui.lineEdit(self.left_box_2_1_r, self, "moment_ypyp", "<y'y'>[rad^2]",labelWidth=70, valueType=float, orientation="horizontal",  callback=self.update)
 
 
         self.left_box_2_2 = oasysgui.widgetBox(self.electron_beam_box, "", addSpace=False, orientation="vertical", height=150)
