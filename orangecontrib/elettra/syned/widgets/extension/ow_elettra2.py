@@ -63,7 +63,7 @@ class OWELETTRA2(OWWidget):
 
 
     MAX_WIDTH = 1320
-    MAX_HEIGHT = 700
+    MAX_HEIGHT = 720
 
     IMAGE_WIDTH = 860
     IMAGE_HEIGHT = 645
@@ -76,7 +76,7 @@ class OWELETTRA2(OWWidget):
 
 
     electron_energy_in_GeV = Setting(2.4)
-    electron_energy_spread = Setting(0.00096)
+    electron_energy_spread = Setting(0.000997)
     ring_current           = Setting(0.4)
     number_of_bunches      = Setting(0.0)
 
@@ -104,6 +104,7 @@ class OWELETTRA2(OWWidget):
     electron_beam_etap_v = Setting(0.0)
 
     type_of_properties = Setting(1)
+    type_of_properties_initial_selection = type_of_properties
 
     auto_energy = Setting(0.0)
     auto_harmonic_number = Setting(1)
@@ -343,6 +344,11 @@ class OWELETTRA2(OWWidget):
         self.electron_beam_etap_v = 0.0
         self.electron_beam_emittance_h = 2.12e-10
         self.electron_beam_emittance_v = 2.12e-12
+
+        # in order to keep the tag of properties selection
+
+        if self.type_of_properties_initial_selection < 4:
+            self.type_of_properties = self.type_of_properties_initial_selection
     
     def set_ss_electron_beam(self):
         self.type_of_properties = 1
@@ -373,6 +379,11 @@ class OWELETTRA2(OWWidget):
         self.electron_beam_etap_v = 0.0
         self.electron_beam_emittance_h = 2.12e-10
         self.electron_beam_emittance_v = 2.12e-12
+
+        # in order to keep the tag of properties selection
+
+        if self.type_of_properties_initial_selection < 4:
+            self.type_of_properties = self.type_of_properties_initial_selection
     
     def get_bl_number(self):
         if self.elettra_id_index == 0: # <None>
@@ -392,9 +403,11 @@ class OWELETTRA2(OWWidget):
 
 
     def update_electron_beam(self):
-        if self.type_of_properties == 4:
+        self.type_of_properties_initial_selection = self.type_of_properties
+
+        if self.type_of_properties_initial_selection == 4:
             self.set_ls_electron_beam()
-        elif self.type_of_properties == 5:
+        elif self.type_of_properties_initial_selection == 5:
             self.set_ss_electron_beam()
         self.set_visible()
         self.update()
@@ -753,7 +766,7 @@ Approximated coherent fraction at 1st harmonic:
         if electron_beam is None:
             electron_beam = ElectronBeam(
                                         energy_in_GeV = 2.4,
-                                        energy_spread = 0.00096,
+                                        energy_spread = 0.000997,
                                         current = 0.2,
                                         number_of_bunches = 1,
                                         moment_xx   = (3.01836e-05)**2,
@@ -916,12 +929,12 @@ Approximated coherent fraction at 1st harmonic:
 
         self.data_dict = out_dict
 
-    # Long Straigth Section electron parameteres
+    # Long Straigth Section electron parameters
     def get_ls_electronbeam(self):
         file_url = self.data_ls       
         elettra_ls = load_from_json_file(file_url)             
         self.ls_electronbeam = elettra_ls.get_electron_beam()
-
+    # Short Straigth Section electron parameters
     def get_ss_electronbeam(self):
         file_url = self.data_ss       
         elettra_ss = load_from_json_file(file_url)            
