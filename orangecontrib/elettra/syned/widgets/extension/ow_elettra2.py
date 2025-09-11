@@ -76,7 +76,7 @@ class OWELETTRA2(OWWidget):
 
 
     electron_energy_in_GeV = Setting(2.4)
-    electron_energy_spread = Setting(0.000997)
+    electron_energy_spread = Setting(0.000934)
     ring_current           = Setting(0.4)
     number_of_bunches      = Setting(0.0)
 
@@ -336,17 +336,18 @@ class OWELETTRA2(OWWidget):
         self.moment_xpxp = moment_xpxp
         self.moment_ypyp = moment_ypyp
 
-        ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
-        self.electron_beam_beta_h = bx
-        self.electron_beam_beta_v = by
-        self.electron_beam_alpha_h = ax
-        self.electron_beam_alpha_v = ay
-        self.electron_beam_eta_h = ex
-        self.electron_beam_eta_v = ey
-        self.electron_beam_etap_h = 0.0
-        self.electron_beam_etap_v = 0.0
-        self.electron_beam_emittance_h = 2.12e-10
-        self.electron_beam_emittance_v = 2.12e-12
+        #ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
+        # please notice that here the values are hardcoded
+        self.electron_beam_beta_h = 8.2
+        self.electron_beam_beta_v = 2.0
+        self.electron_beam_alpha_h = 0.0
+        self.electron_beam_alpha_v = 0.0
+        self.electron_beam_eta_h = 0
+        self.electron_beam_eta_v = 0
+        self.electron_beam_etap_h = 0
+        self.electron_beam_etap_v = 0
+        self.electron_beam_emittance_h = 2.6e-10
+        self.electron_beam_emittance_v = 7.6e-12
 
         # in order to keep the tag of properties selection
 
@@ -371,17 +372,18 @@ class OWELETTRA2(OWWidget):
         self.moment_xpxp = moment_xpxp
         self.moment_ypyp = moment_ypyp
 
-        ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
-        self.electron_beam_beta_h = bx
-        self.electron_beam_beta_v = by
-        self.electron_beam_alpha_h = ax
-        self.electron_beam_alpha_v = ay
-        self.electron_beam_eta_h = ex
-        self.electron_beam_eta_v = ey
-        self.electron_beam_etap_h = 0.0
-        self.electron_beam_etap_v = 0.0
-        self.electron_beam_emittance_h = 2.12e-10
-        self.electron_beam_emittance_v = 2.12e-12
+        #ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
+        # please notice that here the values are hardcoded
+        self.electron_beam_beta_h = 4.656
+        self.electron_beam_beta_v = 1.447
+        self.electron_beam_alpha_h = 0.0
+        self.electron_beam_alpha_v = 0.0
+        self.electron_beam_eta_h = 0.053
+        self.electron_beam_eta_v = 0
+        self.electron_beam_etap_h = 0
+        self.electron_beam_etap_v = 0
+        self.electron_beam_emittance_h = 2.6e-10
+        self.electron_beam_emittance_v = 7.6e-12
 
         # in order to keep the tag of properties selection
 
