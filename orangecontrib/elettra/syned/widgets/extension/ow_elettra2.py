@@ -771,7 +771,7 @@ Approximated coherent fraction at 1st harmonic:
         if electron_beam is None:
             electron_beam = ElectronBeam(
                                         energy_in_GeV = 2.4,
-                                        energy_spread = 0.000997,
+                                        energy_spread = 0.000934,
                                         current = 0.2,
                                         number_of_bunches = 1,
                                         moment_xx   = (3.01836e-05)**2,
