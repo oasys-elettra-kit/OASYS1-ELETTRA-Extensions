@@ -273,7 +273,7 @@ class OWELETTRA2(OWWidget):
                           callback=self.auto_set_undulator_V)
 
         self.initializeTabs()
-        #self.get_magnetic_structure()
+        self.populate_electron_beam()
         self.set_visible()
         self.update()
 
