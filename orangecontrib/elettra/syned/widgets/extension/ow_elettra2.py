@@ -80,6 +80,8 @@ class OWELETTRA2(OWWidget):
     ring_current           = Setting(0.4)
     number_of_bunches      = Setting(0.0)
 
+    use_dispersion = Setting(1) # 0 no, 1 yes
+
     moment_xx           = Setting(0.0)
     moment_xxp          = Setting(0.0)
     moment_xpxp         = Setting(0.0)
@@ -204,8 +206,15 @@ class OWELETTRA2(OWWidget):
                      items=["From 2nd Moments", "From Size/Divergence", "From Twiss papameters","Zero emittance", "Elettra2-LS", "Elettra2-SS"],
                      callback=self.update_electron_beam,
                      sendSelectedValue=False, orientation="horizontal")
+        #box = gui.widgetBox(self.controlArea, "Options")
+        gui.comboBox(self.electron_beam_box, self, "use_dispersion", label="Use Dispersion in Size/Divergence and Moments calculations", labelWidth=350,
+                     items=["No","Yes"],
+                     callback=self.set_use_dispersion,
+                     sendSelectedValue=False, orientation="horizontal")
+        
 
         self.left_box_2_1 = oasysgui.widgetBox(self.electron_beam_box, "", addSpace=False, orientation="horizontal", height=150)
+        
         self.left_box_2_1_l = oasysgui.widgetBox(self.left_box_2_1, "", addSpace=False, orientation="vertical")
         self.left_box_2_1_r = oasysgui.widgetBox(self.left_box_2_1, "", addSpace=False, orientation="vertical")
 
@@ -245,7 +254,7 @@ class OWELETTRA2(OWWidget):
 
         ###################
 
-        left_box_1 = oasysgui.widgetBox(self.tab_sou, "ID Parameters", addSpace=True, orientation="vertical")
+        left_box_1 = oasysgui.widgetBox(self.tab_sou, "ID Parameters", addSpace=False, orientation="vertical")
 
         oasysgui.lineEdit(left_box_1, self, "period_length", "Period Length [m]", labelWidth=260,
                           valueType=float, orientation="horizontal", callback=self.update)
@@ -254,7 +263,7 @@ class OWELETTRA2(OWWidget):
 
 
 
-        left_box_1 = oasysgui.widgetBox(self.tab_sou, "Setting", addSpace=True, orientation="vertical")
+        left_box_1 = oasysgui.widgetBox(self.tab_sou, "Setting", addSpace=False, orientation="vertical")
 
         oasysgui.lineEdit(left_box_1, self, "K_horizontal", "Horizontal K", labelWidth=260, valueType=float, orientation="horizontal")
         oasysgui.lineEdit(left_box_1, self, "K_vertical", "Vertical K", labelWidth=260,
@@ -317,37 +326,55 @@ class OWELETTRA2(OWWidget):
         congruence.checkStrictlyPositiveNumber(self.period_length, "Period Length")
         congruence.checkStrictlyPositiveNumber(self.number_of_periods, "Number of Periods")
 
+    def set_use_dispersion(self):
+        if self.use_dispersion == 0:
+            self.use_dispersion = False
+        else:
+            self.use_dispersion = True
+        self.update()
+        self.set_id()
+
     def set_ls_electron_beam(self):
-        self.type_of_properties = 1
-        x, xp, y, yp = self.ls_electronbeam.get_sigmas_all()
+        # print("Setting LS e-beam")
+        # First we set the type of properties to 2, so that the values
+        # are taken from the JSON     
+
+        self.type_of_properties = 2        
+        ex, ax, bx, ey, ay, by = self.ls_electronbeam.get_twiss_all()
+        nx, npx, ny, npy = self.ls_electronbeam.get_dispersion_all()
+        
+        self.electron_beam_beta_h = bx
+        self.electron_beam_beta_v = by
+        self.electron_beam_alpha_h = ax
+        self.electron_beam_alpha_v = ay
+        self.electron_beam_eta_h = nx
+        self.electron_beam_eta_v = ny
+        self.electron_beam_etap_h = npx
+        self.electron_beam_etap_v = npy
+        self.electron_beam_emittance_h = ex
+        self.electron_beam_emittance_v = ey
+
+        # Now we calculate the size and divergence from the Twiss parameters
+        # including dispersion
+
+        eb = self.get_electron_beam()
+
+        x, xp, y, yp = eb.get_sigmas_all(dispersion=self.use_dispersion)
         self.electron_beam_size_h =       numpy.round(x,12) 
         self.electron_beam_size_v =       numpy.round(y,12)
         self.electron_beam_divergence_h = numpy.round(xp,12)
-        self.electron_beam_divergence_v = numpy.round(yp,12)
+        self.electron_beam_divergence_v = numpy.round(yp,12) 
 
-        #
-        eb = self.get_electron_beam()
+        # Here we calculate the 2nd moments from the Twiss parameters
+        # including dispersion       
 
-        moment_xx, moment_xxp, moment_xpxp, moment_yy, moment_yyp, moment_ypyp = eb.get_moments_all()
+        moment_xx, moment_xxp, moment_xpxp, moment_yy, moment_yyp, moment_ypyp = eb.get_moments_all(dispersion=self.use_dispersion)
         self.moment_xx   = moment_xx
         self.moment_yy   = moment_yy
         self.moment_xxp  = moment_xxp
         self.moment_yyp  = moment_yyp
         self.moment_xpxp = moment_xpxp
-        self.moment_ypyp = moment_ypyp
-
-        #ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
-        # please notice that here the values are hardcoded
-        self.electron_beam_beta_h = 8.2
-        self.electron_beam_beta_v = 2.0
-        self.electron_beam_alpha_h = 0.0
-        self.electron_beam_alpha_v = 0.0
-        self.electron_beam_eta_h = 0
-        self.electron_beam_eta_v = 0
-        self.electron_beam_etap_h = 0
-        self.electron_beam_etap_v = 0
-        self.electron_beam_emittance_h = 2.6e-10
-        self.electron_beam_emittance_v = 7.6e-12
+        self.moment_ypyp = moment_ypyp       
 
         # in order to keep the tag of properties selection
 
@@ -355,35 +382,38 @@ class OWELETTRA2(OWWidget):
             self.type_of_properties = self.type_of_properties_initial_selection
     
     def set_ss_electron_beam(self):
-        self.type_of_properties = 1
-        x, xp, y, yp = self.ss_electronbeam.get_sigmas_all()
+        #print("Setting SS e-beam")        
+        self.type_of_properties = 2       
+        ex, ax, bx, ey, ay, by = self.ss_electronbeam.get_twiss_all()
+        nx, npx, ny, npy = self.ss_electronbeam.get_dispersion_all()
+        
+        self.electron_beam_beta_h = bx
+        self.electron_beam_beta_v = by
+        self.electron_beam_alpha_h = ax
+        self.electron_beam_alpha_v = ay
+        self.electron_beam_eta_h = nx
+        self.electron_beam_eta_v = ny
+        self.electron_beam_etap_h = npx
+        self.electron_beam_etap_v = npy
+        self.electron_beam_emittance_h = ex
+        self.electron_beam_emittance_v = ey
+
+        eb = self.get_electron_beam()
+
+        x, xp, y, yp = eb.get_sigmas_all(dispersion=self.use_dispersion)
         self.electron_beam_size_h =       numpy.round(x,12) 
         self.electron_beam_size_v =       numpy.round(y,12)
         self.electron_beam_divergence_h = numpy.round(xp,12)
         self.electron_beam_divergence_v = numpy.round(yp,12)
-        #
-        eb = self.get_electron_beam()
+        #        
 
-        moment_xx, moment_xxp, moment_xpxp, moment_yy, moment_yyp, moment_ypyp = eb.get_moments_all()
+        moment_xx, moment_xxp, moment_xpxp, moment_yy, moment_yyp, moment_ypyp = eb.get_moments_all(dispersion=self.use_dispersion)
         self.moment_xx   = moment_xx
         self.moment_yy   = moment_yy
         self.moment_xxp  = moment_xxp
         self.moment_yyp  = moment_yyp
         self.moment_xpxp = moment_xpxp
         self.moment_ypyp = moment_ypyp
-
-        #ex, ax, bx, ey, ay, by = eb.get_twiss_no_dispersion_all()
-        # please notice that here the values are hardcoded
-        self.electron_beam_beta_h = 4.656
-        self.electron_beam_beta_v = 1.447
-        self.electron_beam_alpha_h = 0.0
-        self.electron_beam_alpha_v = 0.0
-        self.electron_beam_eta_h = 0.053
-        self.electron_beam_eta_v = 0
-        self.electron_beam_etap_h = 0
-        self.electron_beam_etap_v = 0
-        self.electron_beam_emittance_h = 2.6e-10
-        self.electron_beam_emittance_v = 7.6e-12
 
         # in order to keep the tag of properties selection
 
@@ -415,7 +445,7 @@ class OWELETTRA2(OWWidget):
         elif self.type_of_properties_initial_selection == 5:
             self.set_ss_electron_beam()
         self.set_visible()
-        self.update()
+        self.update()    
 
     def update(self):
         self.check_data()
@@ -741,14 +771,15 @@ Approximated coherent fraction at 1st harmonic:
         elif self.type_of_properties == 2:
             electron_beam.set_twiss_horizontal(self.electron_beam_emittance_h,
                                              self.electron_beam_alpha_h,
-                                             self.electron_beam_beta_h,
-                                             self.electron_beam_eta_h,
-                                             self.electron_beam_etap_h)
+                                             self.electron_beam_beta_h)
+            electron_beam.set_dispersion_horizontal(self.electron_beam_eta_h,
+                                                   self.electron_beam_etap_h)
             electron_beam.set_twiss_vertical(self.electron_beam_emittance_v,
                                              self.electron_beam_alpha_v,
-                                             self.electron_beam_beta_v,
-                                             self.electron_beam_eta_v,
-                                             self.electron_beam_etap_v)
+                                             self.electron_beam_beta_v)
+            electron_beam.set_dispersion_vertical(self.electron_beam_eta_v,
+                                                   self.electron_beam_etap_v)
+                                             
 
         elif self.type_of_properties == 3:
             electron_beam.set_moments_all(0,0,0,0,0,0)
@@ -941,9 +972,12 @@ Approximated coherent fraction at 1st harmonic:
         self.ls_electronbeam = elettra_ls.get_electron_beam()
     # Short Straigth Section electron parameters
     def get_ss_electronbeam(self):
-        file_url = self.data_ss       
+        file_url = self.data_ss
+        #print("Reading SS e-beam from file: ", file_url)       
         elettra_ss = load_from_json_file(file_url)            
         self.ss_electronbeam = elettra_ss.get_electron_beam()
+        #print(self.ss_electronbeam.get_dispersion_all())
+        #print(self.ss_electronbeam.get_moments_all())
 
 if __name__ == "__main__":
     from PyQt5.QtWidgets import QApplication

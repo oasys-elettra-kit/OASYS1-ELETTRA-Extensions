@@ -7,12 +7,16 @@
         "energy_spread": 0.000934,
         "current": 0.4,
         "number_of_bunches": 400,
-        "moment_xx": 3.6610080039999995e-09,
+        "moment_xx": 1.2105599999999998e-9,
         "moment_xxp": 0.0,
         "moment_xpxp": 5.584192439862543e-11,
         "moment_yy": 1.09972e-11,
         "moment_yyp": 0.0,
-        "moment_ypyp": 5.25224602626123e-12
+        "moment_ypyp": 5.25224602626123e-12,
+		"dispersion_x": 0.053,
+        "dispersion_y": 0.0,
+        "dispersionp_x": 0.0,
+        "dispersionp_y": 0.0
     },
     "magnetic_structure": {
         "CLASS_NAME": "Undulator",
