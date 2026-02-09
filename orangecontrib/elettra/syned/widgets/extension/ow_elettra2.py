@@ -140,7 +140,7 @@ class OWELETTRA2(OWWidget):
 
     data_dict = None
 
-    def __init__(self):
+    def __init__(self):        
 
         self.get_data_dictionary_csv() #reads the CSV file with the sources info
         self.get_ls_electronbeam() #reads long section e-beam parameters JSON
@@ -465,10 +465,24 @@ class OWELETTRA2(OWWidget):
             id_naming = "<None>"
             
         else:
-            id = self.data_dict["id_name"][self.elettra_id_index-1]
-            elettra_beamline = self.data_dict["beamline_name"][self.elettra_id_index-1]
-            position = self.data_dict["position"][self.elettra_id_index-1]
-            id_naming = self.data_dict["naming"][self.elettra_id_index-1]
+       
+            try:
+                id = self.data_dict["id_name"][self.elettra_id_index-1]
+                elettra_beamline = self.data_dict["beamline_name"][self.elettra_id_index-1]
+                position = self.data_dict["position"][self.elettra_id_index-1]
+                id_naming = self.data_dict["naming"][self.elettra_id_index-1]
+            except Exception as e:
+                # If settings loading fails, reinitialize to defaults
+                #self._handle_settings_load_failure(e)
+                print("Error getting ID information from data dictionary:", e)
+                print("Setting all ID information to <None>")
+                id = "<None>"
+                elettra_beamline = "<None>"
+                position = "<None>"
+                id_naming = "<None>"
+                QMessageBox.critical(self, "Error", str(e)+"Sorry, something went wrong while setting ID information. All ID Elettra2.0 widget info has been set to <None>", QMessageBox.Ok)
+                #raise RuntimeError("ERROR: Unable to get ID information from data dictionary")
+                
 
         info_parameters = {
             "electron_energy_in_GeV":self.electron_energy_in_GeV,
@@ -644,7 +658,12 @@ Approximated coherent fraction at 1st harmonic:
         
         if self.elettra_bl_index!=0:
 
-            self.elettra_id_index = self.elettra_bl_index
+            try:
+
+                self.elettra_id_index = self.elettra_bl_index
+
+            except Exception as e:
+               raise RuntimeError("ERROR: Unable to set BL parameters from data dictionary: " + str(e.args[0]))
                 
             self.set_id()
 
@@ -652,18 +671,23 @@ Approximated coherent fraction at 1st harmonic:
     def set_id(self):
 
         if self.elettra_id_index!=0:
+
+            try:
             
-            self.populate_magnetic_structure()
-            self.gap_min = self.data_dict["id_minimum_gap_mm"][self.elettra_id_index-1]
-            self.gap_mm = self.data_dict["id_minimum_gap_mm"][self.elettra_id_index-1]
-            
-            if 'LS' in self.data_dict["position"][self.elettra_id_index-1]:
-                self.set_ls_electron_beam()
-            elif 'SS' in self.data_dict["position"][self.elettra_id_index-1]:
-                self.set_ss_electron_beam()
-            else:
-                raise RuntimeError("ERROR: Unable to read source position")
-            self.elettra_bl_index = self.elettra_id_index    
+               self.populate_magnetic_structure()
+               self.gap_min = self.data_dict["id_minimum_gap_mm"][self.elettra_id_index-1]
+               self.gap_mm = self.data_dict["id_minimum_gap_mm"][self.elettra_id_index-1]
+               
+               if 'LS' in self.data_dict["position"][self.elettra_id_index-1]:
+                   self.set_ls_electron_beam()
+               elif 'SS' in self.data_dict["position"][self.elettra_id_index-1]:
+                   self.set_ss_electron_beam()
+               else:
+                   raise RuntimeError("ERROR: Unable to read source position")
+               self.elettra_bl_index = self.elettra_id_index  
+            except Exception as e:               
+               raise RuntimeError("ERROR: Unable to set ID parameters from data dictionary: " + str(e.args[0]))
+                 
         self.update()
 
     def set_K(self):        
