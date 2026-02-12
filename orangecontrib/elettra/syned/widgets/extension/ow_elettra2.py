@@ -1,3 +1,4 @@
+from cProfile import label
 import os, sys
 import numpy
 import pandas
@@ -12,6 +13,12 @@ from syned.storage_ring.magnetic_structures import insertion_device
 from PyQt5.QtGui import QPalette, QColor, QFont
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from PyQt5.QtCore import QRect
+
+from PyQt5.QtWidgets import (
+    QDialog, QVBoxLayout, QLabel, QPushButton, QScrollArea, QWidget
+)
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 
 from orangewidget import gui
 from orangewidget import widget
@@ -152,16 +159,16 @@ class OWELETTRA2(OWWidget):
 
         button_box = oasysgui.widgetBox(self.controlArea, "", addSpace=False, orientation="horizontal")
 
-        button = gui.button(button_box, self, "Send Data", callback=self.send_data)
+        button = gui.button(button_box, self, "Send Data", callback=self.send_data)        
         font = QFont(button.font())
         font.setBold(True)
         button.setFont(font)
         palette = QPalette(button.palette()) # make a copy of the palette
         palette.setColor(QPalette.ButtonText, QColor('Dark Blue'))
         button.setPalette(palette) # assign new palette
-        button.setFixedHeight(45)
+        button.setFixedHeight(45)        
 
-        button = gui.button(button_box, self, "Reset Fields", callback=self.callResetSettings)
+        button = gui.button(button_box, self, "About", callback=self.show_about)
         font = QFont(button.font())
         font.setItalic(True)
         button.setFont(font)
@@ -169,7 +176,7 @@ class OWELETTRA2(OWWidget):
         palette.setColor(QPalette.ButtonText, QColor('Dark Red'))
         button.setPalette(palette) # assign new palette
         button.setFixedHeight(45)
-        button.setFixedWidth(150)
+        button.setFixedWidth(150)        
 
         gui.separator(self.controlArea)
 
@@ -1002,6 +1009,54 @@ Approximated coherent fraction at 1st harmonic:
         self.ss_electronbeam = elettra_ss.get_electron_beam()
         #print(self.ss_electronbeam.get_dispersion_all())
         #print(self.ss_electronbeam.get_moments_all())
+
+    
+    # -------------------------------------------------
+    # Widget about info dialog with scrollable image
+    # -------------------------------------------------
+    def show_about(self):
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Elettra2.0 Information")
+        dlg.resize(700, 600)
+
+        layout = QVBoxLayout(dlg)
+
+        # Load image from installed package
+        img_path = os.path.join(resources.package_dirname("orangecontrib.elettra.syned.data"), 'elettra2_data.png')
+        pixmap = QPixmap(img_path)
+
+        if pixmap.isNull():
+            label = QLabel("Info image not found.\nCheck package_data and MANIFEST.in")
+            label.setAlignment(Qt.AlignCenter)
+            layout.addWidget(label)
+        else:
+            # Container widget (important!)
+            container = QWidget()
+            container_layout = QVBoxLayout(container)
+
+            image_label = QLabel()
+            image_label.setPixmap(pixmap)
+            image_label.setAlignment(Qt.AlignCenter)
+
+            #Critical line: make label keep original image size
+            image_label.setMinimumSize(pixmap.width(), pixmap.height())
+
+            container_layout.addWidget(image_label)
+
+            scroll = QScrollArea()
+            scroll.setWidget(container)
+            scroll.setWidgetResizable(False)  # Enables scrolling
+            scroll.setAlignment(Qt.AlignCenter)
+
+            layout.addWidget(scroll)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dlg.accept)
+        layout.addWidget(close_btn, alignment=Qt.AlignCenter)
+        # dlg.exec_() # This would make the dialog modal, but it frozen the main window until closed.
+        # instead, we want a non-modal dialog:
+        dlg.setModal(False)
+        dlg.show()
 
 if __name__ == "__main__":
     from PyQt5.QtWidgets import QApplication
